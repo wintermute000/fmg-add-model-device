@@ -1,4 +1,5 @@
 {
+    "_comment": "RENAME THIS FILE TO fmginfo.json",
     "adom": "youradom",
     "fortimanager_url": "https://yourfmg.yourdomain.com.au/jsonrpc",
     "policy_package": "yourpolicypackage"
