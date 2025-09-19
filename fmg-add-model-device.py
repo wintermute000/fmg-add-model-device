@@ -26,8 +26,6 @@ def login_to_fortimanager():
         ]
     }
 
-
-
     response = requests.post(fortimanager_url, json=login_data, headers=headers, verify=False)
 
     if response.status_code == 200:
@@ -73,7 +71,6 @@ def workspace_lock(session_token, adom):
                 }
         ]
     }
-
 
     response = requests.post(fortimanager_url, json=workspace_lock_payload, headers=headers, verify=False)
     response_json = response.json()
