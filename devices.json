@@ -1,0 +1,24 @@
+[
+    {
+        "blueprint": "Blueprint-60F",
+        "description": "Branch 3 - Parkville",
+        "name": "sdbranch3",
+        "platform_str": "FortiGate-60F",
+        "serial": "FGT60FTK19000148",
+        "latitude": "-37.7787036",
+        "longitude": "144.9426083",
+        "os_ver": "7.0",
+        "mr": 6
+    },
+    {
+        "blueprint": "Blueprint-60F",
+        "description": "Branch 4 - Chadstone",
+        "name": "sdbranch4",
+        "platform_str": "FortiGate-60F",
+        "serial": "FGT60FTK20052158",
+        "latitude": "-37.88784649999999",
+        "longitude": "145.082586",
+        "os_ver": "7.0",
+        "mr": 6
+    }
+]

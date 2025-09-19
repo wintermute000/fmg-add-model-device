@@ -12,51 +12,51 @@ username = os.environ['FMGUSERNAME']
 password = os.environ['FMGPASSWORD']
 policy_package = 'branch'
 
-device_list = [
-    {
-        "blueprint": "Blueprint-60F",
-        "description": "Branch 3 - Parkville"
-        "name": "sdbranch3",
-        "platform_str": "FortiGate-60F",
-        "serial": "FGT60FTK19000148",
-        "latitude": "-37.7787036"
-        "longitude": "144.9426083"
-        "os_ver": "7.0",
-        "mr": 6
-    },
-    {
-        "blueprint": "Blueprint-60F",
-        "description": "Branch 4 - Chadstone",
-        "name": "sdbranch4",
-        "platform_str": "FortiGate-60F",
-        "serial": "FGT60FTK20052158",
-        "latitude": "-37.88784649999999"
-        "longitude": "145.082586"
-        "os_ver": "7.0",
-        "mr": 6
-    }
-]
+# device_list = [
+#     {
+#         "blueprint": "Blueprint-60F",
+#         "description": "Branch 3 - Parkville"
+#         "name": "sdbranch3",
+#         "platform_str": "FortiGate-60F",
+#         "serial": "FGT60FTK19000148",
+#         "latitude": "-37.7787036",
+#         "longitude": "144.9426083",
+#         "os_ver": "7.0",
+#         "mr": 6
+#     },
+#     {
+#         "blueprint": "Blueprint-60F",
+#         "description": "Branch 4 - Chadstone",
+#         "name": "sdbranch4",
+#         "platform_str": "FortiGate-60F",
+#         "serial": "FGT60FTK20052158",
+#         "latitude": "-37.88784649999999",
+#         "longitude": "145.082586",
+#         "os_ver": "7.0",
+#         "mr": 6
+#     }
+# ]
 
-metavar_dict = {
-    "sdbranch3": {
-        "AP_intf": "10.137.136.65/26",
-        "Internal_Intf": "10.137.137.1/24",
-        "LAN_intf": "10.137.136.129/26",
-        "WLAN_intf": "10.137.136.193/26",
-        "branch_id": "3",
-        "fortilink_intf": "10.137.136.1/26",
-        "hostname": "sdbranch3",
-    },
-    "sdbranch4": {
-        "AP_intf": "10.137.138.65/26",
-        "Internal_Intf": "10.137.139.1/24",
-        "LAN_intf": "10.137.138.129/26",
-        "WLAN_intf": "10.137.138.193/26",
-        "branch_id": "4",
-        "fortilink_intf": "10.137.138.1/26",
-        "hostname": "sdbranch4",
-    }
-}
+# metavar_dict = {
+#     "sdbranch3": {
+#         "AP_intf": "10.137.136.65/26",
+#         "Internal_Intf": "10.137.137.1/24",
+#         "LAN_intf": "10.137.136.129/26",
+#         "WLAN_intf": "10.137.136.193/26",
+#         "branch_id": "3",
+#         "fortilink_intf": "10.137.136.1/26",
+#         "hostname": "sdbranch3"
+#     },
+#     "sdbranch4": {
+#         "AP_intf": "10.137.138.65/26",
+#         "Internal_Intf": "10.137.139.1/24",
+#         "LAN_intf": "10.137.138.129/26",
+#         "WLAN_intf": "10.137.138.193/26",
+#         "branch_id": "4",
+#         "fortilink_intf": "10.137.138.1/26",
+#         "hostname": "sdbranch4"
+#     }
+# }
 
 def login_to_fortimanager():
     login_data = {
@@ -393,6 +393,11 @@ def add_metavars(session_token, adom):
         return None
 
 if __name__ == "__main__":
+    with open("devices.json", "r") as d:
+        device_list = json.load(d)
+
+    with open("metavars.json", "r") as v:
+        metavar_dict = json.load(v)
     
     # Get Session Token
     session_token = login_to_fortimanager()
