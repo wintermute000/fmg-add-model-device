@@ -1,5 +1,4 @@
-#
-Script to add model devices to FortiManager
+#Script to add model devices to FortiManager
 ---
 
 Tested on 7.6.4 and FG-60F on 7.6.4
@@ -13,17 +12,14 @@ Requirements:
 - Device attributes in devices.json as list of dictionaries
 - Meta variables in metavars.json as a dictionary of dictionaries
 
-Full credit to the FortiManager API How-To
----
+##Full credit to the FortiManager API How-To
 https://how-to-fortimanager-api.readthedocs.io/en/latest/001_fmg_json_api_introduction.html
 
 
-API Best Practices
----
+##API Best Practices
 https://docs.fortinet.com/document/fortimanager/7.6.0/api-best-practices/500458/introduction
 
-Mass Deployment Guide
----
+##Mass Deployment Guide
 https://docs.fortinet.com/document/fortimanager/7.4.0/mass-provisioning-using-fortimanager/253438/introduction
 
 
