@@ -1,5 +1,0 @@
-{
-    "adom": "sdbranch",
-    "fortimanager_url": "https://fmg.yourdomain.com.au/jsonrpc",
-    "policy_package": "branch"
-}
