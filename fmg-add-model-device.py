@@ -5,12 +5,14 @@ import os
 import pprint
 import time
 
-adom = 'sdbranch'
-headers = {'Content-Type': 'application/json'}
-fortimanager_url = 'https://fmg-prd-01.ftntmelb.com.au/jsonrpc'
+# adom = 'sdbranch'
+# policy_package = 'branch'
+# fortimanager_url = 'https://fmg-prd-01.ftntmelb.com.au/jsonrpc'
+
 username = os.environ['FMGUSERNAME']
 password = os.environ['FMGPASSWORD']
-policy_package = 'branch'
+headers = {'Content-Type': 'application/json'}
+
 
 # device_list = [
 #     {
@@ -393,6 +395,12 @@ def add_metavars(session_token, adom):
         return None
 
 if __name__ == "__main__":
+    with open("fmginfo.json", "r") as f:
+        config = json.load(f)
+        adom = config["adom"]
+        fortimanager_url = config["fortimanager_url"]
+        policy_package = config["policy_package"]
+
     with open("devices.json", "r") as d:
         device_list = json.load(d)
 
