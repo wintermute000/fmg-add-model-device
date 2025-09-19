@@ -1,5 +1,5 @@
 {
     "adom": "sdbranch",
-    "fortimanager_url": "https://fmg-prd-01.ftntmelb.com.au/jsonrpc",
+    "fortimanager_url": "https://fmg.yourdomain.com.au/jsonrpc",
     "policy_package": "branch"
 }
