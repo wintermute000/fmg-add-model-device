@@ -13,6 +13,7 @@ Requirements:
 - FortiManager attributes (ADOM, policy package, URL) in fmginfo.json as a dictionary - example fmginfo.json.example provided - <b> to use, rename to fmginfo.json! </b>
 - Device attributes in devices.json as list of dictionaries
 - Meta variables in metavars.json as a dictionary of dictionaries
+- Devices that already exist will be skipped (matches on device name only)
 
 ##Full credit to the FortiManager API How-To
 - https://how-to-fortimanager-api.readthedocs.io/en/latest/001_fmg_json_api_introduction.html

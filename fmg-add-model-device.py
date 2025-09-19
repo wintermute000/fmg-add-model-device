@@ -318,6 +318,64 @@ def add_metavars(session_token, adom):
         print('Add metadata variables message =', response_json["result"][0]["status"]["message"])
         return None
 
+def get_existing_devices(session_token, adom):
+    # Get existing devices
+    get_existing_devices_payload = {
+        "id": 1,
+        "method": "get",
+        "params": [
+            {
+            "fields": [
+                "name",
+                "sn"
+            ],
+            "option": [
+                "no loadsub"
+            ],
+            "url": f"/dvmdb/adom/{adom}/device"
+            }
+        ],
+        "session": f"{session_token}",
+        "verbose": 1
+    }
+
+    response = requests.post(fortimanager_url, json=get_existing_devices_payload, headers=headers, verify=False)
+    response_json = response.json()
+
+    if response.status_code == 200:
+        print('Get existing devices status code =', response.status_code)
+        print('Get existing devices message =', response_json["result"][0]["status"]["message"])
+        existing_devices = response_json["result"][0]["data"]
+        return existing_devices
+
+    else:
+        print(f"Get existing devices failed. Status code: {response.status_code}")
+        print('Get existing devices message =', response_json["result"][0]["status"]["message"])
+        return None
+
+def check_existing_devices(existing_devices, device_list):
+    existing_names = set()
+    for d in existing_devices:
+        existing_names.add(d["name"])
+
+    # Build a new filtered list
+    filtered_devices = []
+    for device in device_list:
+        if device["name"] not in existing_names:
+            filtered_devices.append(device)
+
+    return filtered_devices
+
+def check_existing_metavars(existing_devices, metavars_dict):
+    existing_names = set(d["name"] for d in existing_devices)
+
+    # Delete matching keys from metavars_dict
+    for name in list(metavars_dict.keys()):
+        if name in existing_names:
+            del metavars_dict[name]
+
+    return metavars_dict
+
 if __name__ == "__main__":
     with open("fmginfo.json", "r") as f:
         config = json.load(f)
@@ -339,24 +397,59 @@ if __name__ == "__main__":
 
     # Lock ADOM, add devices, add metadata variables, commit ADOM, unlock ADOM and logout
     if session_token:
+
+        # Filter out existing devices and remove from data structures to skip
+        existing_devices = get_existing_devices(session_token, adom)
+        time.sleep(1)
+
+        print("Existing devices are:")
+        print("---")
+        pprint.pprint(existing_devices)
+        print("---")
+
+        device_list = check_existing_devices(existing_devices, device_list)
+        print("Filtered device list with existing devices removed:")
+        print("---")
+        pprint.pprint(device_list)
+        print("---")
+
+        metavar_dict = check_existing_metavars(existing_devices, metavar_dict)
+        print("Filtered metadata variables with existing devices removed:")
+        print("---")
+        pprint.pprint(metavar_dict)
+        print("---")
+
+        # Lock workspace
         workspace_lock(session_token, adom)
         time.sleep(1)
+
+        # Add devices that do not already exist
         add_device_from_blueprint(session_token, adom)
         time.sleep(1)
+
+        # Add metadata variables and commit
         add_metavars(session_token, adom)
         time.sleep(1)
         workspace_commit(session_token, adom)
         time.sleep(1)
+
+        # Device install and commit
         device_install(session_token, adom)
         time.sleep(1)
         workspace_commit(session_token, adom)
         time.sleep(1)
+
+        # Install  policy package and commit
         policy_install(session_token, adom)
         time.sleep(1)
         workspace_commit(session_token, adom)
         time.sleep(1)
+
+        # Unlock workspace
         workspace_unlock(session_token, adom)
         time.sleep(1)
+
+        # Logout
         logout_from_fortimanager(session_token)
 
     else:
