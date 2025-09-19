@@ -5,60 +5,11 @@ import os
 import pprint
 import time
 
-# adom = 'sdbranch'
-# policy_package = 'branch'
-# fortimanager_url = 'https://fmg-prd-01.ftntmelb.com.au/jsonrpc'
-
 username = os.environ['FMGUSERNAME']
 password = os.environ['FMGPASSWORD']
 headers = {'Content-Type': 'application/json'}
 
 
-# device_list = [
-#     {
-#         "blueprint": "Blueprint-60F",
-#         "description": "Branch 3 - Parkville"
-#         "name": "sdbranch3",
-#         "platform_str": "FortiGate-60F",
-#         "serial": "FGT60FTK19000148",
-#         "latitude": "-37.7787036",
-#         "longitude": "144.9426083",
-#         "os_ver": "7.0",
-#         "mr": 6
-#     },
-#     {
-#         "blueprint": "Blueprint-60F",
-#         "description": "Branch 4 - Chadstone",
-#         "name": "sdbranch4",
-#         "platform_str": "FortiGate-60F",
-#         "serial": "FGT60FTK20052158",
-#         "latitude": "-37.88784649999999",
-#         "longitude": "145.082586",
-#         "os_ver": "7.0",
-#         "mr": 6
-#     }
-# ]
-
-# metavar_dict = {
-#     "sdbranch3": {
-#         "AP_intf": "10.137.136.65/26",
-#         "Internal_Intf": "10.137.137.1/24",
-#         "LAN_intf": "10.137.136.129/26",
-#         "WLAN_intf": "10.137.136.193/26",
-#         "branch_id": "3",
-#         "fortilink_intf": "10.137.136.1/26",
-#         "hostname": "sdbranch3"
-#     },
-#     "sdbranch4": {
-#         "AP_intf": "10.137.138.65/26",
-#         "Internal_Intf": "10.137.139.1/24",
-#         "LAN_intf": "10.137.138.129/26",
-#         "WLAN_intf": "10.137.138.193/26",
-#         "branch_id": "4",
-#         "fortilink_intf": "10.137.138.1/26",
-#         "hostname": "sdbranch4"
-#     }
-# }
 
 def login_to_fortimanager():
     login_data = {
@@ -75,8 +26,7 @@ def login_to_fortimanager():
         ]
     }
 
-    # Disable SSL warnings
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
     response = requests.post(fortimanager_url, json=login_data, headers=headers, verify=False)
 
@@ -101,9 +51,6 @@ def logout_from_fortimanager(session_token):
         ]
     }
 
-    # Disable SSL warnings
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
     response = requests.post(fortimanager_url, json=logout_data, headers=headers, verify=False)
     response_json = response.json()
 
@@ -127,8 +74,6 @@ def workspace_lock(session_token, adom):
         ]
     }
 
-    # Disable SSL warnings
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     response = requests.post(fortimanager_url, json=workspace_lock_payload, headers=headers, verify=False)
     response_json = response.json()
@@ -153,9 +98,6 @@ def workspace_unlock(session_token, adom):
         ]
     }
 
-    # Disable SSL warnings
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
     response = requests.post(fortimanager_url, json=workspace_unlock_payload, headers=headers, verify=False)
     response_json = response.json()
 
@@ -179,9 +121,6 @@ def workspace_commit(session_token, adom):
                 }
         ]
     }
-
-    # Disable SSL warnings
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     response = requests.post(fortimanager_url, json=workspace_commit_payload, headers=headers, verify=False)
     response_json = response.json()
@@ -224,9 +163,6 @@ def device_install(session_token, adom):
         ]
     }
 
-    # Disable SSL warnings
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
     response = requests.post(fortimanager_url, json=device_install_data, headers=headers, verify=False)
     response_json = response.json()
 
@@ -267,9 +203,6 @@ def policy_install(session_token, adom):
             }
         ]
     }
-
-    # Disable SSL warnings
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     response = requests.post(fortimanager_url, json=policy_install_data, headers=headers, verify=False)
     response_json = response.json()
@@ -327,9 +260,6 @@ def add_device_from_blueprint(session_token, adom):
     print(json.dumps(add_device_payload, indent = 6)) 
     print("---")
 
-    # Disable SSL warnings
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
     response = requests.post(fortimanager_url, json=add_device_payload, headers=headers, verify=False)
     response_json = response.json()
 
@@ -379,9 +309,6 @@ def add_metavars(session_token, adom):
     print(json.dumps(add_metavars_payload, indent = 4)) 
     print("---")
 
-    # Disable SSL warnings
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
     response = requests.post(fortimanager_url, json=add_metavars_payload, headers=headers, verify=False)
     response_json = response.json()
 
@@ -406,7 +333,10 @@ if __name__ == "__main__":
 
     with open("metavars.json", "r") as v:
         metavar_dict = json.load(v)
-    
+
+    # Disable SSL warnings
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
     # Get Session Token
     session_token = login_to_fortimanager()
 
