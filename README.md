@@ -17,10 +17,11 @@ Tested on 7.6.4 and FG-60F on 7.6.4
 ```
 python3 fmg-add-model-device.py
 ```
-- needs input files in format as per examples provided
-    - FortiManager attributes (ADOM, URL) in fmginfo.json as a dictionary - example fmginfo.json.example provided - <b> to use, rename to fmginfo.json! </b>
-    - Device attributes in devices.json as list of dictionaries
-    - Meta variables in metavars.json as a dictionary of dictionaries
+
+Needs input files in format as per examples provided:
+- FortiManager attributes (ADOM, URL) in fmginfo.json as a dictionary - example fmginfo.json.example provided - <b> to use, rename to fmginfo.json! </b>
+- Device attributes in devices.json
+- Meta variables in metavars.json
 
 ## FortiManager API How-To
 - https://how-to-fortimanager-api.readthedocs.io/en/latest/001_fmg_json_api_introduction.html
