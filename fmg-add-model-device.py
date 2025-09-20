@@ -11,94 +11,13 @@ from fmgcommon import logout
 from fmgcommon import lock
 from fmgcommon import unlock
 from fmgcommon import commit
-
+from fmgcommon import device_install
+from fmgcommon import policy_install
 
 username = os.environ['FMGUSERNAME']
 password = os.environ['FMGPASSWORD']
 headers = {'Content-Type': 'application/json'}
 
-def device_install(session_token, adom, device_list):
-
-    add_deviceinstall_scope_list = []
-
-    # Generate list of dictionaries of devices
-    for device in device_list:
-        install_block = {
-            "name": f"{device['name']}",
-            "vdom": "root"
-            }
-        add_deviceinstall_scope_list.append(install_block)
-
-    device_install_data = {
-        "session": f"{session_token}",
-        "id": 1,
-        "method": "exec",
-        "params": [
-            {
-                "url": "/securityconsole/install/device",
-                "data": [
-                    {
-                        "adom": f"{adom}",
-                        "scope": add_deviceinstall_scope_list ,
-                        "flags": "none"
-                    }
-                ]
-            }
-        ]
-    }
-
-    response = requests.post(fortimanager_url, json=device_install_data, headers=headers, verify=False)
-    response_json = response.json()
-
-    if response.status_code == 200:
-        # Extract session token from the response
-        print('Device install response code =', response.status_code)
-        print('Device install message =', response_json["result"][0]["status"]["message"])
-    else:
-        print(f"Device install failed. Status code: {response.status_code}")
-        print('Device install message =', response_json["result"][0]["status"]["message"])
-
-def policy_install(session_token, adom, pkg_list):
-
-    # Iterate through the list of dicts like [{'branch': [...]}, {'branchtest': [...]}]
-    for group in pkg_list:
-        for pkg, devices in group.items():
-            # Build scope list for this package
-            scope_list = []
-            for device in devices:
-                scope_list.append({
-                    "name": device,
-                    "vdom": "root"
-                })
-
-            # Build request payload for this package
-            policy_install_payload = {
-                "session": session_token,
-                "id": 1,
-                "method": "exec",
-                "params": [
-                    {
-                        "url": "/securityconsole/install/package",
-                        "data": {
-                            "adom": f"{adom}",
-                            "pkg": f"{pkg}",                 # 👈 pkg now comes from dict key
-                            "scope": scope_list,        # 👈 device names mapped here
-                            "flags": "none"
-                        }
-                    }
-                ]
-            }
-          
-            response = requests.post(fortimanager_url, json=policy_install_payload, headers=headers, verify=False)
-            response_json = response.json()
-
-            if response.status_code == 200:
-                # Extract session token from the response
-                print(f'Policy install for policy package {pkg} response code =', response.status_code)
-                print(f'Policy install for policy package {pkg} message =', response_json["result"][0]["status"]["message"])
-            else:
-                print(f"Policy install for policy package {pkg} failed. Status code: {response.status_code}")
-                print(f'Policy install for policy package {pkg} message =', response_json["result"][0]["status"]["message"])
 
 def add_device_from_blueprint(session_token, adom, device_list):
 
@@ -397,7 +316,7 @@ if __name__ == "__main__":
         print("---")
         print("Installing device(s)")
         print("---")
-        device_install(session_token, adom, device_list)
+        device_install(session_token, adom, fortimanager_url, device_list)
         time.sleep(1)
         commit(session_token, adom, fortimanager_url)
         time.sleep(1)
@@ -406,7 +325,7 @@ if __name__ == "__main__":
         # Install  policy package and commit
         print("Installing policy package(s)")
         print("---")
-        policy_install(session_token, adom, pkg_list)
+        policy_install(session_token, adom, fortimanager_url, pkg_list)
         time.sleep(1)
         commit(session_token, adom, fortimanager_url)
         time.sleep(1)

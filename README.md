@@ -11,7 +11,7 @@ Tested on 7.6.4 and FG-60F on 7.6.4
 - FortiManager password as environmental variable (EXPORT FMGPASSWORD=xyz)
 - Compatible with workspace mode with error handling if already locked (comment out lock/unlock/commit if not required)
 - Devices that already exist will be skipped - matches on device name only
-- Common functions (login, logout, lock, unlock, commit) are imported from fmgcommon.py
+- Common functions (login, logout, lock, unlock, commit, device install, policy package install) are imported from fmgcommon.py
 
 ## Usage
 - python3 fmg-add-model-device.py
