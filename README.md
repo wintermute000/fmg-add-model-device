@@ -1,9 +1,9 @@
-Script to add model devices to FortiManager
+# Script to add model devices to FortiManager
 ---
 
 Tested on 7.6.4 and FG-60F on 7.6.4
 
-Requirements:
+## Requirements:
 - Blueprint including policy package assignment (https://docs.fortinet.com/document/fortimanager/7.6.4/administration-guide/55038/using-device-blueprints-for-model-devices)
 - Policy packages and all templates assigned via blueprint (supports multiple blueprints)
 - FortiManager administrative user with JSON RPC read/write access
@@ -15,17 +15,16 @@ Requirements:
 - Meta variables in metavars.json as a dictionary of dictionaries
 - Devices that already exist will be skipped (matches on device name only)
 
-#Full credit to the FortiManager API How-To
+## FortiManager API How-To
 - https://how-to-fortimanager-api.readthedocs.io/en/latest/001_fmg_json_api_introduction.html
 
-
-#API Best Practices
+## API Best Practices
 - https://docs.fortinet.com/document/fortimanager/7.6.0/api-best-practices/500458/introduction
 
-#Mass Deployment Guide
+## Mass Deployment Guide
 - https://docs.fortinet.com/document/fortimanager/7.4.0/mass-provisioning-using-fortimanager/253438/introduction
 
-#Example
+## Example
 - Example clean run without duplicate devices using json examples provided
     - sdbranch3 and sdbranch4 utilise the blueprint "Blueprint-60F" and policy package "branch"
     - sdbranch5 utilises the blueprint "BlueprintTest" and policy package "branchtest"
