@@ -503,20 +503,14 @@ if __name__ == "__main__":
         print("---")
 
         # Add devices that do not already exist
-        print("Adding model devices")
-        print("---")
         add_device_from_blueprint(session_token, adom)
         time.sleep(1)
-        print("---")
 
         # Add metadata variables and commit
-        print("Adding metadata variables")
-        print("---")
         add_metavars(session_token, adom)
         time.sleep(1)
         workspace_commit(session_token, adom)
         time.sleep(1)
-        print("---")
 
         # Device install and commit
         print("Installing device(s)")

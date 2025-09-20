@@ -92,17 +92,20 @@ Filtered metadata variables with existing devices removed:
                'fortilink_intf': '10.137.140.1/26',
                'hostname': 'sdbranch5'}}
 ---
-List of policy packages and assigne devices as derived from blueprints:
+List of policy packages and assigned devices as derived from blueprints:
 ---
 [{'branch': ['sdbranch3', 'sdbranch4']}, {'branchtest': ['sdbranch5']}]
 ---
+Locking workspace before proceeding
+---
 Locking workspace response code = 200
 Locking workspace response message = OK
+---
 Adding Model Device(s)
 ---
 {
       "id": 1,
-      "session": "r3tOZWX5mkNr3dUocoV1oaF34Si+MtH677cDEFFiIWPMvCABv284KDUUPsPKEREf7iqwGpYoaOsfD+h8VTettA==",
+      "session": "p3xLwO9Gek6Xk5Y/21vJNbC4+wRLuLcQILTkKf4GMFSlnXeg8BUK7WCUeTvjlyYUKCxVNiy9MaQD2FilHAPdGQ==",
       "method": "exec",
       "params": [
             {
@@ -171,7 +174,7 @@ Adding Metadata Variables
 ---
 {
     "id": 1,
-    "session": "r3tOZWX5mkNr3dUocoV1oaF34Si+MtH677cDEFFiIWPMvCABv284KDUUPsPKEREf7iqwGpYoaOsfD+h8VTettA==",
+    "session": "p3xLwO9Gek6Xk5Y/21vJNbC4+wRLuLcQILTkKf4GMFSlnXeg8BUK7WCUeTvjlyYUKCxVNiy9MaQD2FilHAPdGQ==",
     "method": "add",
     "params": [
         {
@@ -475,19 +478,28 @@ Add metadata variables status code = 200
 Add metadata variables = OK
 Commit workspace response code = 200
 Commit workspace response message = OK
+Installing device(s)
+---
 Device install response code = 200
 Device install message = OK
 Commit workspace response code = 200
 Commit workspace response message = OK
+---
+Installing policy package(s)
+---
 Policy install for policy package branch response code = 200
 Policy install for policy package branch message = OK
 Policy install for policy package branchtest response code = 200
 Policy install for policy package branchtest message = OK
 Commit workspace response code = 200
 Commit workspace response message = OK
+---
+Unlocking workspace and logging out from session
+---
 Unlocking workspace status code = 200
 Unlocking workspace message = OK
 Logout response code = 200
 Logout message = OK
+---
 
 ```
