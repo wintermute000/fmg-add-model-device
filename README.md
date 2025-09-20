@@ -33,7 +33,7 @@ Tested on 7.6.4 and FG-60F on 7.6.4
 - Example clean run without duplicate devices using json examples provided
     - sdbranch3 and sdbranch4 utilise the blueprint "Blueprint-60F" and policy package "branch"
     - sdbranch5 utilises the blueprint "BlueprintTest" and policy package "branchtest"
-
+<img width="1879" height="236" alt="add model devices to fmg" src="https://github.com/user-attachments/assets/5035868e-47f5-415a-b674-d1e67e9cffea" />
 ```
 Get existing devices status code = 200
 Get existing devices message = OK
