@@ -4,8 +4,8 @@
 Tested on 7.6.4 and FG-60F on 7.6.4
 
 ## Requirements:
-- Blueprint including policy package assignment (https://docs.fortinet.com/document/fortimanager/7.6.4/administration-guide/55038/using-device-blueprints-for-model-devices)
-- Policy packages and all templates assigned via blueprint (supports multiple blueprints)
+- Blueprint(s) (https://docs.fortinet.com/document/fortimanager/7.6.4/administration-guide/55038/using-device-blueprints-for-model-devices)
+- Policy packag(es) and all templates assigned via blueprint(s) - supports multiple blueprints
 - FortiManager administrative user with JSON RPC read/write access
 - FortiManager username as environmental variable (EXPORT FMGUSERNAME=xyz)
 - FortiManager password as environmental variable (EXPORT FMGPASSWORD=xyz)
