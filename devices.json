@@ -20,5 +20,16 @@
         "longitude": "145.082586",
         "os_ver": "7.0",
         "mr": 6
+    },
+    {
+        "blueprint": "BlueprintTest",
+        "description": "Branch 5 - Brunswick",
+        "name": "sdbranch5",
+        "platform_str": "FortiGate-60F",
+        "serial": "FGT60FTK20094976",
+        "latitude": "-37.7670402",
+        "longitude": "144.9621239",
+        "os_ver": "7.0",
+        "mr": 6
     }
 ]

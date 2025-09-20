@@ -5,7 +5,7 @@ Tested on 7.6.4 and FG-60F on 7.6.4
 
 Requirements:
 - Blueprint including policy package assignment (https://docs.fortinet.com/document/fortimanager/7.6.4/administration-guide/55038/using-device-blueprints-for-model-devices)
-- Single policy package (roadmap: support for multiple policy packages)
+- Policy packages and all templates assigned via blueprint (supports multiple blueprints)
 - FortiManager administrative user with JSON RPC read/write access
 - FortiManager username as environmental variable (EXPORT FMGUSERNAME=xyz)
 - FortiManager password as environmental variable (EXPORT FMGPASSWORD=xyz)
@@ -15,18 +15,20 @@ Requirements:
 - Meta variables in metavars.json as a dictionary of dictionaries
 - Devices that already exist will be skipped (matches on device name only)
 
-##Full credit to the FortiManager API How-To
+#Full credit to the FortiManager API How-To
 - https://how-to-fortimanager-api.readthedocs.io/en/latest/001_fmg_json_api_introduction.html
 
 
-##API Best Practices
+#API Best Practices
 - https://docs.fortinet.com/document/fortimanager/7.6.0/api-best-practices/500458/introduction
 
-##Mass Deployment Guide
+#Mass Deployment Guide
 - https://docs.fortinet.com/document/fortimanager/7.4.0/mass-provisioning-using-fortimanager/253438/introduction
 
-###Example
-- Example clean run without duplicate devices
+#Example
+- Example clean run without duplicate devices using json examples provided
+    - sdbranch3 and sdbranch4 utilise the blueprint "Blueprint-60F" and policy package "branch"
+    - sdbranch5 utilises the blueprint "BlueprintTest" and policy package "branchtest"
 
 ```
 Get existing devices status code = 200
@@ -56,7 +58,16 @@ Filtered device list with existing devices removed:
   'name': 'sdbranch4',
   'os_ver': '7.0',
   'platform_str': 'FortiGate-60F',
-  'serial': 'FGT60FTK20052158'}]
+  'serial': 'FGT60FTK20052158'},
+ {'blueprint': 'BlueprintTest',
+  'description': 'Branch 5 - Brunswick',
+  'latitude': '-37.7670402',
+  'longitude': '144.9621239',
+  'mr': 6,
+  'name': 'sdbranch5',
+  'os_ver': '7.0',
+  'platform_str': 'FortiGate-60F',
+  'serial': 'FGT60FTK20094976'}]
 ---
 Filtered metadata variables with existing devices removed:
 ---
@@ -73,7 +84,18 @@ Filtered metadata variables with existing devices removed:
                'WLAN_intf': '10.137.138.193/26',
                'branch_id': '4',
                'fortilink_intf': '10.137.138.1/26',
-               'hostname': 'sdbranch4'}}
+               'hostname': 'sdbranch4'},
+ 'sdbranch5': {'AP_intf': '10.137.140.65/26',
+               'Internal_Intf': '10.137.141.1/24',
+               'LAN_intf': '10.137.140.129/26',
+               'WLAN_intf': '10.137.140.193/26',
+               'branch_id': '4',
+               'fortilink_intf': '10.137.140.1/26',
+               'hostname': 'sdbranch5'}}
+---
+List of policy packages and assigne devices as derived from blueprints:
+---
+[{'branch': ['sdbranch3', 'sdbranch4']}, {'branchtest': ['sdbranch5']}]
 ---
 Locking workspace response code = 200
 Locking workspace response message = OK
@@ -81,7 +103,7 @@ Adding Model Device(s)
 ---
 {
       "id": 1,
-      "session": "AryeaK4cPKVR2A5vi7dHZC8wUfqbh32LDG+C8lTn5qsV0N81S7A14MLYMlK9ibQN8PBbvqzPQR81w/WOjAomhw==",
+      "session": "r3tOZWX5mkNr3dUocoV1oaF34Si+MtH677cDEFFiIWPMvCABv284KDUUPsPKEREf7iqwGpYoaOsfD+h8VTettA==",
       "method": "exec",
       "params": [
             {
@@ -120,6 +142,22 @@ Adding Model Device(s)
                                     "mr": 6,
                                     "platform_str": "FortiGate-60F",
                                     "sn": "FGT60FTK20052158"
+                              },
+                              {
+                                    "adm_usr": "admin",
+                                    "desc": "Branch 5 - Brunswick",
+                                    "device action": "add_model",
+                                    "device blueprint": "BlueprintTest",
+                                    "latitude": "-37.7670402",
+                                    "longitude": "144.9621239",
+                                    "mgmt_mode": "fmg",
+                                    "mgt_vdom": "root",
+                                    "name": "sdbranch5",
+                                    "os_type": 0,
+                                    "os_ver": "7.0",
+                                    "mr": 6,
+                                    "platform_str": "FortiGate-60F",
+                                    "sn": "FGT60FTK20094976"
                               }
                         ],
                         "flags": "create_task"
@@ -134,7 +172,7 @@ Adding Metadata Variables
 ---
 {
     "id": 1,
-    "session": "AryeaK4cPKVR2A5vi7dHZC8wUfqbh32LDG+C8lTn5qsV0N81S7A14MLYMlK9ibQN8PBbvqzPQR81w/WOjAomhw==",
+    "session": "r3tOZWX5mkNr3dUocoV1oaF34Si+MtH677cDEFFiIWPMvCABv284KDUUPsPKEREf7iqwGpYoaOsfD+h8VTettA==",
     "method": "add",
     "params": [
         {
@@ -332,6 +370,104 @@ Adding Metadata Variables
                 }
             ],
             "url": "/pm/config/adom/sdbranch/obj/fmg/variable/hostname/dynamic_mapping"
+        },
+        {
+            "data": [
+                {
+                    "_scope": [
+                        {
+                            "name": "sdbranch5",
+                            "vdom": "global"
+                        }
+                    ],
+                    "value": "10.137.140.65/26"
+                }
+            ],
+            "url": "/pm/config/adom/sdbranch/obj/fmg/variable/AP_intf/dynamic_mapping"
+        },
+        {
+            "data": [
+                {
+                    "_scope": [
+                        {
+                            "name": "sdbranch5",
+                            "vdom": "global"
+                        }
+                    ],
+                    "value": "10.137.141.1/24"
+                }
+            ],
+            "url": "/pm/config/adom/sdbranch/obj/fmg/variable/Internal_Intf/dynamic_mapping"
+        },
+        {
+            "data": [
+                {
+                    "_scope": [
+                        {
+                            "name": "sdbranch5",
+                            "vdom": "global"
+                        }
+                    ],
+                    "value": "10.137.140.129/26"
+                }
+            ],
+            "url": "/pm/config/adom/sdbranch/obj/fmg/variable/LAN_intf/dynamic_mapping"
+        },
+        {
+            "data": [
+                {
+                    "_scope": [
+                        {
+                            "name": "sdbranch5",
+                            "vdom": "global"
+                        }
+                    ],
+                    "value": "10.137.140.193/26"
+                }
+            ],
+            "url": "/pm/config/adom/sdbranch/obj/fmg/variable/WLAN_intf/dynamic_mapping"
+        },
+        {
+            "data": [
+                {
+                    "_scope": [
+                        {
+                            "name": "sdbranch5",
+                            "vdom": "global"
+                        }
+                    ],
+                    "value": "4"
+                }
+            ],
+            "url": "/pm/config/adom/sdbranch/obj/fmg/variable/branch_id/dynamic_mapping"
+        },
+        {
+            "data": [
+                {
+                    "_scope": [
+                        {
+                            "name": "sdbranch5",
+                            "vdom": "global"
+                        }
+                    ],
+                    "value": "10.137.140.1/26"
+                }
+            ],
+            "url": "/pm/config/adom/sdbranch/obj/fmg/variable/fortilink_intf/dynamic_mapping"
+        },
+        {
+            "data": [
+                {
+                    "_scope": [
+                        {
+                            "name": "sdbranch5",
+                            "vdom": "global"
+                        }
+                    ],
+                    "value": "sdbranch5"
+                }
+            ],
+            "url": "/pm/config/adom/sdbranch/obj/fmg/variable/hostname/dynamic_mapping"
         }
     ]
 }
@@ -344,12 +480,15 @@ Device install response code = 200
 Device install message = OK
 Commit workspace response code = 200
 Commit workspace response message = OK
-Policy install response code = 200
-Policy install message = OK
+Policy install for policy package branch response code = 200
+Policy install for policy package branch message = OK
+Policy install for policy package branchtest response code = 200
+Policy install for policy package branchtest message = OK
 Commit workspace response code = 200
 Commit workspace response message = OK
 Unlocking workspace status code = 200
 Unlocking workspace message = OK
 Logout response code = 200
 Logout message = OK
+
 ```

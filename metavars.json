@@ -16,5 +16,14 @@
         "branch_id": "4",
         "fortilink_intf": "10.137.138.1/26",
         "hostname": "sdbranch4"
+    },
+    "sdbranch5": {
+        "AP_intf": "10.137.140.65/26",
+        "Internal_Intf": "10.137.141.1/24",
+        "LAN_intf": "10.137.140.129/26",
+        "WLAN_intf": "10.137.140.193/26",
+        "branch_id": "4",
+        "fortilink_intf": "10.137.140.1/26",
+        "hostname": "sdbranch5"
     }
 }

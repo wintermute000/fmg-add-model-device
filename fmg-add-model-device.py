@@ -178,46 +178,47 @@ def device_install(session_token, adom):
         print(f"Device install failed. Status code: {response.status_code}")
         print('Device install message =', response_json["result"][0]["status"]["message"])
 
-def policy_install(session_token, adom):
+def policy_install(session_token, adom, pkg_list):
 
-    add_policyinstall_scope_list = []
+    # Iterate through the list of dicts like [{'branch': [...]}, {'branchtest': [...]}]
+    for group in pkg_list:
+        for pkg, devices in group.items():
+            # Build scope list for this package
+            scope_list = []
+            for device in devices:
+                scope_list.append({
+                    "name": device,
+                    "vdom": "root"
+                })
 
-    # Generate list of dictionaries of devices
-    for device in device_list:
-        policy_install_block = {
-            "name": f"{device['name']}",
-            "vdom": "root"
-            }
-        add_policyinstall_scope_list.append(policy_install_block)
-
-    policy_install_data = {
-        "session": f"{session_token}",
-        "id": 1,
-        "method": "exec",
-        "params": [
-            {
-                "url": "/securityconsole/install/package",
-                "data": {
-                        
-                        "adom": f"{adom}",
-                        "pkg": f"{policy_package}",
-                        "scope": add_policyinstall_scope_list ,
-                        "flags": "none"
+            # Build request payload for this package
+            policy_install_payload = {
+                "session": session_token,
+                "id": 1,
+                "method": "exec",
+                "params": [
+                    {
+                        "url": "/securityconsole/install/package",
+                        "data": {
+                            "adom": f"{adom}",
+                            "pkg": f"{pkg}",                 # 👈 pkg now comes from dict key
+                            "scope": scope_list,        # 👈 device names mapped here
+                            "flags": "none"
+                        }
                     }
+                ]
             }
-        ]
-    }
+          
+            response = requests.post(fortimanager_url, json=policy_install_payload, headers=headers, verify=False)
+            response_json = response.json()
 
-    response = requests.post(fortimanager_url, json=policy_install_data, headers=headers, verify=False)
-    response_json = response.json()
-
-    if response.status_code == 200:
-        # Extract session token from the response
-        print('Policy install response code =', response.status_code)
-        print('Policy install message =', response_json["result"][0]["status"]["message"])
-    else:
-        print(f"Policy install failed. Status code: {response.status_code}")
-        print('Policy install message =', response_json["result"][0]["status"]["message"])
+            if response.status_code == 200:
+                # Extract session token from the response
+                print(f'Policy install for policy package {pkg} response code =', response.status_code)
+                print(f'Policy install for policy package {pkg} message =', response_json["result"][0]["status"]["message"])
+            else:
+                print(f"Policy install for policy package {pkg} failed. Status code: {response.status_code}")
+                print(f'Policy install for policy package {pkg} message =', response_json["result"][0]["status"]["message"])
 
 def add_device_from_blueprint(session_token, adom):
 
@@ -385,6 +386,65 @@ def check_existing_metavars(existing_devices, metavars_dict):
 
     return metavars_dict
 
+def get_blueprints(session_token, adom, device_list):
+    blueprint_dict = {}
+    blueprint_tmplist = []
+
+    # Iterate through device list and produce a dictionary of blueprint: [list of devices using]
+    for device in device_list:
+        blueprint = device["blueprint"]
+        if blueprint not in blueprint_dict:
+            blueprint_dict[blueprint] = []
+            blueprint_tmplist.append(blueprint)
+        blueprint_dict[blueprint].append(device["name"])
+    
+    # Set of blueprint names
+    blueprint_set = set(blueprint_tmplist)
+
+    # Convert grouped dict into a list of dictionaries
+    blueprint_list = []
+    for bp, names in blueprint_dict.items():
+        blueprint_list.append({bp: names})
+    
+    # Get the policy package referenced by each blueprint
+    get_blueprint_pkg_payload = {
+        "id": 1,
+        "method": "get",
+        "params": [
+            {
+            "url": f"/pm/config/adom/{adom}/obj/fmg/device/blueprint"
+            }
+        ],
+        "session": f"{session_token}",
+    }
+
+    response = requests.post(fortimanager_url, json=get_blueprint_pkg_payload, headers=headers, verify=False)
+    response_json = response.json()
+    
+    blueprint_pkgs = {}
+    for item in response_json["result"][0]["data"]:
+        blueprint_name = item["name"]
+        pkg_value = item["pkg"]
+        blueprint_pkgs[blueprint_name] = pkg_value
+
+    # For blueprint_list
+    # {'Blueprint-60F': 'branch', 'BlueprintTest': 'branchtest'}
+    # And blueprint_pkgs
+    # [{'Blueprint-60F': ['sdbranch3', 'sdbranch4']}, {'BlueprintTest': ['sdbranch5']}]
+    # Substitute policy package name for blueprint
+
+    substituted = []
+    for entry in blueprint_list:
+        new_entry = {}
+        for bp, dev_list in entry.items():
+            if bp in blueprint_pkgs:
+                new_entry[blueprint_pkgs[bp]] = dev_list
+            else:
+                new_entry[bp] = dev_list  # fallback if no match
+        substituted.append(new_entry)
+
+    return substituted
+
 if __name__ == "__main__":
     with open("fmginfo.json", "r") as f:
         config = json.load(f)
@@ -428,6 +488,13 @@ if __name__ == "__main__":
         pprint.pprint(metavar_dict)
         print("---")
 
+        # Get list of devices and the policy packages they use as referenced in blueprints
+        pkg_list = get_blueprints(session_token, adom, device_list)
+        print("List of policy packages and assigne devices as derived from blueprints:")
+        print("---")
+        pprint.pprint(pkg_list)
+        print("---")
+
         # Lock workspace
         workspace_lock(session_token, adom)
         time.sleep(1)
@@ -449,7 +516,7 @@ if __name__ == "__main__":
         time.sleep(1)
 
         # Install  policy package and commit
-        policy_install(session_token, adom)
+        policy_install(session_token, adom, pkg_list)
         time.sleep(1)
         workspace_commit(session_token, adom)
         time.sleep(1)
