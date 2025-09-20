@@ -490,43 +490,61 @@ if __name__ == "__main__":
 
         # Get list of devices and the policy packages they use as referenced in blueprints
         pkg_list = get_blueprints(session_token, adom, device_list)
-        print("List of policy packages and assigne devices as derived from blueprints:")
+        print("List of policy packages and assigned devices as derived from blueprints:")
         print("---")
         pprint.pprint(pkg_list)
         print("---")
 
         # Lock workspace
+        print("Locking workspace before proceeding")
+        print("---")
         workspace_lock(session_token, adom)
         time.sleep(1)
+        print("---")
 
         # Add devices that do not already exist
+        print("Adding model devices")
+        print("---")
         add_device_from_blueprint(session_token, adom)
         time.sleep(1)
+        print("---")
 
         # Add metadata variables and commit
+        print("Adding metadata variables")
+        print("---")
         add_metavars(session_token, adom)
         time.sleep(1)
         workspace_commit(session_token, adom)
         time.sleep(1)
+        print("---")
 
         # Device install and commit
+        print("Installing device(s)")
+        print("---")
         device_install(session_token, adom)
         time.sleep(1)
         workspace_commit(session_token, adom)
         time.sleep(1)
+        print("---")
 
         # Install  policy package and commit
+        print("Installing policy package(s)")
+        print("---")
         policy_install(session_token, adom, pkg_list)
         time.sleep(1)
         workspace_commit(session_token, adom)
         time.sleep(1)
+        print("---")
 
         # Unlock workspace
+        print("Unlocking workspace and logging out from session")
+        print("---")
         workspace_unlock(session_token, adom)
         time.sleep(1)
 
         # Logout
         logout_from_fortimanager(session_token)
+        print("---")
 
     else:
         print("Login failed. Unable to obtain session token.")

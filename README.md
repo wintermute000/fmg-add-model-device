@@ -10,7 +10,7 @@ Tested on 7.6.4 and FG-60F on 7.6.4
 - FortiManager username as environmental variable (EXPORT FMGUSERNAME=xyz)
 - FortiManager password as environmental variable (EXPORT FMGPASSWORD=xyz)
 - Workspace mode (comment out lock/unlock/commit if not required)
-- FortiManager attributes (ADOM, policy package, URL) in fmginfo.json as a dictionary - example fmginfo.json.example provided - <b> to use, rename to fmginfo.json! </b>
+- FortiManager attributes (ADOM, URL) in fmginfo.json as a dictionary - example fmginfo.json.example provided - <b> to use, rename to fmginfo.json! </b>
 - Device attributes in devices.json as list of dictionaries
 - Meta variables in metavars.json as a dictionary of dictionaries
 - Devices that already exist will be skipped (matches on device name only)
