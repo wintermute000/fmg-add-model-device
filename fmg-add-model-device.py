@@ -5,139 +5,19 @@ import os
 import pprint
 import time
 
+# Import common FMG modules
+from fmgcommon import login
+from fmgcommon import logout
+from fmgcommon import lock
+from fmgcommon import unlock
+from fmgcommon import commit
+
+
 username = os.environ['FMGUSERNAME']
 password = os.environ['FMGPASSWORD']
 headers = {'Content-Type': 'application/json'}
 
-
-
-def login_to_fortimanager():
-    login_data = {
-        "id": 1,
-        "method": "exec",
-        "params": [
-            {
-                "data": {
-                    "passwd": password,
-                    "user": username
-                },
-                "url": "/sys/login/user"
-            }
-        ]
-    }
-
-    response = requests.post(fortimanager_url, json=login_data, headers=headers, verify=False)
-
-    if response.status_code == 200:
-        # Extract session token from the response
-        session_token = response.json().get('session')
-        return session_token
-    else:
-        print(f"Login failed. Status code: {response.status_code}")
-        print('Login message =', response_json["result"][0]["status"]["message"])
-        return None
-
-def logout_from_fortimanager(session_token):
-    logout_data = {
-        "session": f"{session_token}",
-        "id": 1,
-        "method": "exec",
-        "params": [
-            {
-                "url": "/sys/logout"
-            }
-        ]
-    }
-
-    response = requests.post(fortimanager_url, json=logout_data, headers=headers, verify=False)
-    response_json = response.json()
-
-    if response.status_code == 200:
-        # Extract session token from the response
-        print('Logout response code =', response.status_code)
-        print('Logout message =', response_json["result"][0]["status"]["message"])
-    else:
-        print(f"Logout failed. Status code: {response.status_code}")
-        print('Logout message =', response_json["result"][0]["status"]["message"])
-
-def workspace_lock(session_token, adom):
-    workspace_lock_payload = {
-        "session": f"{session_token}",
-        "id": 1,
-        "method": "exec",
-        "params": [
-            {
-                "url": f"/dvmdb/adom/{adom}/workspace/lock"
-                }
-        ]
-    }
-
-    response = requests.post(fortimanager_url, json=workspace_lock_payload, headers=headers, verify=False)
-    response_json = response.json()
-
-    if response.status_code == 200:
-        print('Locking workspace response code =', response.status_code)
-        print('Locking workspace response message =', response_json["result"][0]["status"]["message"])
-        # If ADOM already locked, quit
-        if response_json["result"][0]["status"]["message"] == "Workspace is locked by other user":
-            print('*******************************************************')
-            print('ADOM locked by other user, cannot continue, terminating')
-            print('*******************************************************')
-            logout_from_fortimanager(session_token)
-            quit()
-
-    else:
-        print(f"Workspace lock failed. Status code: {response.status_code}")
-        # Log out and quit
-    
-def workspace_unlock(session_token, adom):
-    workspace_unlock_payload = {
-        "session": f"{session_token}",
-        "id": 1,
-        "method": "exec",
-        "params": [
-            {
-                "url": f"/dvmdb/adom/{adom}/workspace/unlock"
-                }
-        ]
-    }
-
-    response = requests.post(fortimanager_url, json=workspace_unlock_payload, headers=headers, verify=False)
-    response_json = response.json()
-
-    if response.status_code == 200:
-        print('Unlocking workspace status code =', response.status_code)
-        print('Unlocking workspace message =', response_json["result"][0]["status"]["message"])
-
-    else:
-        print(f"Workspace Unlock failed. Status code: {response.status_code}")
-        print('Unlocking workspace message =', response_json["result"][0]["status"]["message"])
-        return None
-
-def workspace_commit(session_token, adom):
-    workspace_commit_payload = {
-        "session": f"{session_token}",
-        "id": 1,
-        "method": "exec",
-        "params": [
-            {
-                "url": f"/dvmdb/adom/{adom}/workspace/commit"
-                }
-        ]
-    }
-
-    response = requests.post(fortimanager_url, json=workspace_commit_payload, headers=headers, verify=False)
-    response_json = response.json()
-
-    if response.status_code == 200:
-        print('Commit workspace response code =', response.status_code)
-        print('Commit workspace response message =', response_json["result"][0]["status"]["message"])
-
-    else:
-        print(f"Workspace commit failed. Status code: {response.status_code}")
-        return None
-
-def device_install(session_token, adom):
+def device_install(session_token, adom, device_list):
 
     add_deviceinstall_scope_list = []
 
@@ -220,7 +100,7 @@ def policy_install(session_token, adom, pkg_list):
                 print(f"Policy install for policy package {pkg} failed. Status code: {response.status_code}")
                 print(f'Policy install for policy package {pkg} message =', response_json["result"][0]["status"]["message"])
 
-def add_device_from_blueprint(session_token, adom):
+def add_device_from_blueprint(session_token, adom, device_list):
 
     add_dev_list = []
 
@@ -277,7 +157,7 @@ def add_device_from_blueprint(session_token, adom):
         print('Add device(s) message =', response_json["result"][0]["status"]["message"])
         return None
 
-def add_metavars(session_token, adom):
+def add_metavars(session_token, adom, metavar_dict):
 
     add_metavar_list = []
 
@@ -463,7 +343,7 @@ if __name__ == "__main__":
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     # Get Session Token
-    session_token = login_to_fortimanager()
+    session_token = login(username, password, fortimanager_url)
 
     # Lock ADOM, add devices, add metadata variables, commit ADOM, unlock ADOM and logout
     if session_token:
@@ -499,27 +379,27 @@ if __name__ == "__main__":
         # Lock workspace
         print("Locking workspace before proceeding")
         print("---")
-        workspace_lock(session_token, adom)
+        lock(session_token, adom, fortimanager_url)
         time.sleep(1)
         print("---")
 
         # Add devices that do not already exist
-        add_device_from_blueprint(session_token, adom)
+        add_device_from_blueprint(session_token, adom, device_list)
         time.sleep(1)
 
         # Add metadata variables and commit
-        add_metavars(session_token, adom)
+        add_metavars(session_token, adom, metavar_dict)
         time.sleep(1)
-        workspace_commit(session_token, adom)
+        commit(session_token, adom, fortimanager_url)
         time.sleep(1)
 
         # Device install and commit
         print("---")
         print("Installing device(s)")
         print("---")
-        device_install(session_token, adom)
+        device_install(session_token, adom, device_list)
         time.sleep(1)
-        workspace_commit(session_token, adom)
+        commit(session_token, adom, fortimanager_url)
         time.sleep(1)
         print("---")
 
@@ -528,18 +408,18 @@ if __name__ == "__main__":
         print("---")
         policy_install(session_token, adom, pkg_list)
         time.sleep(1)
-        workspace_commit(session_token, adom)
+        commit(session_token, adom, fortimanager_url)
         time.sleep(1)
         print("---")
 
         # Unlock workspace
         print("Unlocking workspace and logging out from session")
         print("---")
-        workspace_unlock(session_token, adom)
+        unlock(session_token, adom, fortimanager_url)
         time.sleep(1)
 
         # Logout
-        logout_from_fortimanager(session_token)
+        logout(session_token, fortimanager_url)
         print("---")
 
     else:
