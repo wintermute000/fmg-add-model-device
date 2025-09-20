@@ -105,7 +105,7 @@ Adding Model Device(s)
 ---
 {
       "id": 1,
-      "session": "p3xLwO9Gek6Xk5Y/21vJNbC4+wRLuLcQILTkKf4GMFSlnXeg8BUK7WCUeTvjlyYUKCxVNiy9MaQD2FilHAPdGQ==",
+      "session": "39l9qQ1DcDGs2y5Fdd2f5XmUoP6Yx34W8ZSIkj6DAlEofw04WkCGSdaqzz674sa+KzXxgo9iz0r4dJgVq7Y45g==",
       "method": "exec",
       "params": [
             {
@@ -170,11 +170,12 @@ Adding Model Device(s)
 ---
 Add device(s) status code = 200
 Add device(s) message = OK
+---
 Adding Metadata Variables
 ---
 {
     "id": 1,
-    "session": "p3xLwO9Gek6Xk5Y/21vJNbC4+wRLuLcQILTkKf4GMFSlnXeg8BUK7WCUeTvjlyYUKCxVNiy9MaQD2FilHAPdGQ==",
+    "session": "39l9qQ1DcDGs2y5Fdd2f5XmUoP6Yx34W8ZSIkj6DAlEofw04WkCGSdaqzz674sa+KzXxgo9iz0r4dJgVq7Y45g==",
     "method": "add",
     "params": [
         {
@@ -478,6 +479,7 @@ Add metadata variables status code = 200
 Add metadata variables = OK
 Commit workspace response code = 200
 Commit workspace response message = OK
+---
 Installing device(s)
 ---
 Device install response code = 200
@@ -501,5 +503,4 @@ Unlocking workspace message = OK
 Logout response code = 200
 Logout message = OK
 ---
-
 ```
