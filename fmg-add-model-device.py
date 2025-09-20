@@ -309,6 +309,7 @@ def add_metavars(session_token, adom):
         "method": "add",
         "params": add_metavar_list
     }
+    print("---")
     print("Adding Metadata Variables")
     print("---")
     print(json.dumps(add_metavars_payload, indent = 4)) 
@@ -513,6 +514,7 @@ if __name__ == "__main__":
         time.sleep(1)
 
         # Device install and commit
+        print("---")
         print("Installing device(s)")
         print("---")
         device_install(session_token, adom)
