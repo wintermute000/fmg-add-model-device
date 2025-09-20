@@ -78,10 +78,17 @@ def workspace_lock(session_token, adom):
     if response.status_code == 200:
         print('Locking workspace response code =', response.status_code)
         print('Locking workspace response message =', response_json["result"][0]["status"]["message"])
+        # If ADOM already locked, quit
+        if response_json["result"][0]["status"]["message"] == "Workspace is locked by other user":
+            print('*******************************************************')
+            print('ADOM locked by other user, cannot continue, terminating')
+            print('*******************************************************')
+            logout_from_fortimanager(session_token)
+            quit()
 
     else:
         print(f"Workspace lock failed. Status code: {response.status_code}")
-        return None
+        # Log out and quit
     
 def workspace_unlock(session_token, adom):
     workspace_unlock_payload = {
@@ -354,9 +361,9 @@ def get_existing_devices(session_token, adom):
         return None
 
 def check_existing_devices(existing_devices, device_list):
-    existing_names = set()
-    for d in existing_devices:
-        existing_names.add(d["name"])
+    existing_names = set()   # start with an empty set
+    for d in existing_devices:   # loop through each device 
+        existing_names.add(d["name"])  # add the "name" value to the set
 
     # Build a new filtered list
     filtered_devices = []
@@ -367,7 +374,9 @@ def check_existing_devices(existing_devices, device_list):
     return filtered_devices
 
 def check_existing_metavars(existing_devices, metavars_dict):
-    existing_names = set(d["name"] for d in existing_devices)
+    existing_names = set()   # start with an empty set
+    for d in existing_devices:   # loop through each device 
+        existing_names.add(d["name"])  # add the "name" value to the set
 
     # Delete matching keys from metavars_dict
     for name in list(metavars_dict.keys()):
