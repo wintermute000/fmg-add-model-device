@@ -14,7 +14,9 @@ Tested on 7.6.4 and FG-60F on 7.6.4
 - Common functions (login, logout, lock, unlock, commit, device install, policy package install) are imported from fmgcommon.py
 
 ## Usage
-- python3 fmg-add-model-device.py
+```
+python3 fmg-add-model-device.py
+```
 - needs input files in format as per examples provided
     - FortiManager attributes (ADOM, URL) in fmginfo.json as a dictionary - example fmginfo.json.example provided - <b> to use, rename to fmginfo.json! </b>
     - Device attributes in devices.json as list of dictionaries
